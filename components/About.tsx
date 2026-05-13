@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import { ClipReveal, StaggerReveal, staggerChild } from "@/components/ScrollReveal";
+import { currentlyBuilding } from "@/data/projects";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -42,11 +43,22 @@ export default function About() {
       </StaggerReveal>
 
       <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-10%" }}
+        transition={{ duration: 0.9, ease, delay: 0.4 }}
+        className="mt-14 md:mt-16 max-w-3xl flex items-start gap-3 text-sm md:text-base text-white/65 leading-relaxed"
+      >
+        <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse mt-2 md:mt-2.5 shrink-0" />
+        <span>{currentlyBuilding}</span>
+      </motion.div>
+
+      <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 1, ease, delay: 0.5 }}
-        className="mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 text-sm"
+        transition={{ duration: 1, ease, delay: 0.55 }}
+        className="mt-12 md:mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 text-sm"
       >
         {[
           { k: "Based", v: "Dubai, UAE" },
