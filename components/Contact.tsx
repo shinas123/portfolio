@@ -61,9 +61,10 @@ export default function Contact() {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, ease, delay: 0.4 }}
-          className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-4 gap-6 text-sm"
+          className="mt-16 md:mt-24 grid grid-cols-2 md:grid-cols-5 gap-6 text-sm"
         >
           {[
+            { k: "Résumé", v: "Download PDF ↓", href: "/Shinas_AR_Resume.pdf", download: true },
             { k: "LinkedIn", v: "linkedin.com/in/shinas-ar", href: "https://linkedin.com/in/shinas-ar" },
             { k: "GitHub", v: "github.com/shinas123", href: "https://github.com/shinas123" },
             { k: "Phone", v: "+971 526 581 900", href: "tel:+971526581900" },
@@ -74,8 +75,9 @@ export default function Contact() {
               {s.href ? (
                 <a
                   href={s.href}
-                  target="_blank"
+                  target={s.download ? undefined : "_blank"}
                   rel="noreferrer"
+                  download={s.download ? "Shinas_AR_Resume.pdf" : undefined}
                   className="mt-2 block text-white/90 hover:text-white transition-colors break-all md:break-normal"
                 >
                   {s.v}

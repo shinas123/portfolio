@@ -28,12 +28,25 @@ export default function Navbar() {
           </a>
         ))}
       </nav>
-      <a
-        href="#contact"
-        className="text-sm text-white/90 border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all"
-      >
-        Get in touch
-      </a>
+      <div className="flex items-center gap-2 md:gap-3">
+        <a
+          href="/Shinas_AR_Resume.pdf"
+          download="Shinas_AR_Resume.pdf"
+          className="hidden sm:inline-flex items-center gap-1.5 text-sm text-white/80 hover:text-white px-3 py-2 transition-colors"
+          aria-label="Download résumé"
+        >
+          CV
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+            <path d="M12 5v14M5 12l7 7 7-7" />
+          </svg>
+        </a>
+        <a
+          href="#contact"
+          className="text-sm text-white/90 border border-white/30 px-4 py-2 rounded-full hover:bg-white hover:text-black transition-all"
+        >
+          Get in touch
+        </a>
+      </div>
     </motion.header>
   );
 }
