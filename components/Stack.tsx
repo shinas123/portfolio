@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "motion/react";
+import { ClipReveal } from "@/components/ScrollReveal";
 
 const ROW_1 = [
   "Claude Code",
@@ -36,21 +37,19 @@ const ease = [0.22, 1, 0.36, 1] as const;
 export default function Stack() {
   return (
     <section id="stack" className="relative py-28 md:py-40 border-y border-white/10 overflow-hidden">
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-20%" }}
-        transition={{ duration: 0.7, ease }}
-        className="text-center mb-14 md:mb-20 px-6"
-      >
-        <p className="text-xs tracking-[0.3em] uppercase text-white/40">◇ Stack</p>
-        <h2
-          className="mt-4 font-serif tracking-tight"
-          style={{ fontSize: "clamp(2rem, 6vw, 6rem)" }}
-        >
-          Tools I <em className="italic accent-grad">reach for.</em>
-        </h2>
-      </motion.div>
+      <div className="text-center mb-14 md:mb-20 px-6">
+        <ClipReveal>
+          <p className="text-xs tracking-[0.3em] uppercase text-white/40">◇ Stack</p>
+        </ClipReveal>
+        <ClipReveal delay={0.15}>
+          <h2
+            className="mt-4 font-serif tracking-tight"
+            style={{ fontSize: "clamp(2rem, 6vw, 6rem)" }}
+          >
+            Tools I <em className="italic accent-grad">reach for.</em>
+          </h2>
+        </ClipReveal>
+      </div>
 
       <div className="space-y-8 md:space-y-12">
         <Row items={ROW_1} direction="left" speed="38s" />

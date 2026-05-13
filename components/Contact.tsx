@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import Magnetic from "@/components/Magnetic";
+import { ClipReveal } from "@/components/ScrollReveal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -11,28 +12,22 @@ export default function Contact() {
       className="relative px-5 md:px-10 lg:px-14 pt-28 md:pt-44 pb-10 max-w-screen-2xl mx-auto min-h-[90svh] flex flex-col justify-between overflow-hidden"
     >
       <div>
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-15%" }}
-          transition={{ duration: 0.7, ease }}
-          className="text-xs tracking-[0.3em] uppercase text-white/40 mb-8"
-        >
-          ◇ Contact
-        </motion.p>
+        <ClipReveal>
+          <p className="text-xs tracking-[0.3em] uppercase text-white/40 mb-8">
+            ◇ Contact
+          </p>
+        </ClipReveal>
 
-        <motion.h2
-          initial={{ opacity: 0, y: 28 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-15%" }}
-          transition={{ duration: 0.95, ease, delay: 0.1 }}
-          className="font-serif leading-[0.95] tracking-tight"
-          style={{ fontSize: "clamp(2.5rem, 9vw, 10rem)" }}
-        >
-          Got a <em className="italic accent-grad">project?</em>
-          <br />
-          Let&apos;s build it.
-        </motion.h2>
+        <ClipReveal delay={0.15} duration={1.3}>
+          <h2
+            className="font-serif leading-[0.95] tracking-tight"
+            style={{ fontSize: "clamp(2.5rem, 9vw, 10rem)" }}
+          >
+            Got a <em className="italic accent-grad">project?</em>
+            <br />
+            Let&apos;s build it.
+          </h2>
+        </ClipReveal>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}

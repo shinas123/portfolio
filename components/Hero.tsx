@@ -2,6 +2,7 @@
 import { useRef } from "react";
 import { motion, useMotionValue, useMotionTemplate, useSpring } from "motion/react";
 import Magnetic from "@/components/Magnetic";
+import Starfield from "@/components/Starfield";
 
 const NAME = "SHINAS AR";
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -55,6 +56,17 @@ export default function Hero() {
         className="pointer-events-none absolute inset-0 z-0"
         style={{ background: spotlight }}
       />
+
+      {/* Starfield (right half of hero, desktop+) */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1.5, delay: 2.6 }}
+        aria-hidden
+        className="hidden md:block absolute inset-y-0 right-0 w-[55%] z-0 starfield-fade"
+      >
+        <Starfield density={1.1} />
+      </motion.div>
 
       {/* Static ambient glows */}
       <div className="absolute inset-0 pointer-events-none">

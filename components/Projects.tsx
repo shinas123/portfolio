@@ -3,6 +3,7 @@ import { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, AnimatePresence } from "motion/react";
 import Image from "next/image";
 import { projects, type Project } from "@/data/projects";
+import { ClipReveal } from "@/components/ScrollReveal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -27,29 +28,29 @@ export default function Projects() {
     <section id="work" className="relative px-5 md:px-10 lg:px-14 py-28 md:py-44 max-w-screen-2xl mx-auto">
       <div className="flex items-end justify-between mb-16 md:mb-24">
         <div>
-          <motion.p
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-15%" }}
-            transition={{ duration: 0.7, ease }}
-            className="text-xs tracking-[0.3em] uppercase text-white/40 mb-6"
-          >
-            ◇ Selected work
-          </motion.p>
-          <motion.h2
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-15%" }}
-            transition={{ duration: 0.9, ease, delay: 0.1 }}
-            className="font-serif tracking-tight"
-            style={{ fontSize: "clamp(2.25rem, 7vw, 7rem)" }}
-          >
-            Things I&apos;ve <em className="italic accent-grad">shipped.</em>
-          </motion.h2>
+          <ClipReveal>
+            <p className="text-xs tracking-[0.3em] uppercase text-white/40 mb-6">
+              ◇ Selected work
+            </p>
+          </ClipReveal>
+          <ClipReveal delay={0.15}>
+            <h2
+              className="font-serif tracking-tight"
+              style={{ fontSize: "clamp(2.25rem, 7vw, 7rem)" }}
+            >
+              Things I&apos;ve <em className="italic accent-grad">shipped.</em>
+            </h2>
+          </ClipReveal>
         </div>
-        <span className="hidden md:block text-xs tracking-[0.3em] uppercase text-white/30">
+        <motion.span
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-10%" }}
+          transition={{ duration: 0.7, ease, delay: 0.4 }}
+          className="hidden md:block text-xs tracking-[0.3em] uppercase text-white/30"
+        >
           {projects.length.toString().padStart(2, "0")} projects
-        </span>
+        </motion.span>
       </div>
 
       <div

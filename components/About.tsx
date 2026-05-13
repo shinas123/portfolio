@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "motion/react";
+import { ClipReveal, StaggerReveal, staggerChild } from "@/components/ScrollReveal";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -17,38 +18,34 @@ export default function About() {
       id="about"
       className="relative px-5 md:px-10 lg:px-14 py-28 md:py-44 max-w-screen-2xl mx-auto"
     >
-      <motion.p
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-20%" }}
-        transition={{ duration: 0.7, ease }}
-        className="text-xs tracking-[0.3em] uppercase text-white/40 mb-10"
-      >
-        ◇ About
-      </motion.p>
-      <div
+      <ClipReveal>
+        <p className="text-xs tracking-[0.3em] uppercase text-white/40 mb-10">
+          ◇ About
+        </p>
+      </ClipReveal>
+
+      <StaggerReveal
         className="font-serif leading-[1.1] tracking-tight"
-        style={{ fontSize: "clamp(1.75rem, 4.5vw, 4.5rem)" }}
+        stagger={0.1}
       >
-        {lines.map((l, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-25%" }}
-            transition={{ duration: 0.9, ease, delay: i * 0.08 }}
-            className={i === 0 ? "text-white" : "text-white/55"}
-          >
-            {l}
-          </motion.div>
-        ))}
-      </div>
+        <div style={{ fontSize: "clamp(1.75rem, 4.5vw, 4.5rem)" }}>
+          {lines.map((l, i) => (
+            <motion.div
+              key={i}
+              variants={staggerChild}
+              className={i === 0 ? "text-white" : "text-white/55"}
+            >
+              {l}
+            </motion.div>
+          ))}
+        </div>
+      </StaggerReveal>
 
       <motion.div
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
-        transition={{ duration: 1, ease, delay: 0.6 }}
+        transition={{ duration: 1, ease, delay: 0.5 }}
         className="mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 text-sm"
       >
         {[
