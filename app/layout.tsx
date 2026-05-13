@@ -3,6 +3,7 @@ import { Inter, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import SmoothScroll from "@/components/SmoothScroll";
 import Cursor from "@/components/Cursor";
+import LoadingScreen from "@/components/LoadingScreen";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const display = Instrument_Serif({
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${sans.variable} ${display.variable}`}>
       <body className="bg-ink text-chrome antialiased">
+        <LoadingScreen />
         <Cursor />
         <SmoothScroll>{children}</SmoothScroll>
       </body>

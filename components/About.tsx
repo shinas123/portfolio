@@ -13,7 +13,10 @@ const lines = [
 
 export default function About() {
   return (
-    <section id="about" className="relative px-6 md:px-10 py-32 md:py-44 max-w-7xl mx-auto">
+    <section
+      id="about"
+      className="relative px-5 md:px-10 lg:px-14 py-28 md:py-44 max-w-screen-2xl mx-auto"
+    >
       <motion.p
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -23,7 +26,10 @@ export default function About() {
       >
         ◇ About
       </motion.p>
-      <div className="font-serif text-3xl md:text-5xl lg:text-6xl leading-[1.1] tracking-tight max-w-5xl">
+      <div
+        className="font-serif leading-[1.1] tracking-tight"
+        style={{ fontSize: "clamp(1.75rem, 4.5vw, 4.5rem)" }}
+      >
         {lines.map((l, i) => (
           <motion.div
             key={i}
@@ -43,7 +49,7 @@ export default function About() {
         whileInView={{ opacity: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, ease, delay: 0.6 }}
-        className="mt-20 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 text-sm"
+        className="mt-16 md:mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 text-sm"
       >
         {[
           { k: "Based", v: "Dubai, UAE" },

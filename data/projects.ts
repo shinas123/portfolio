@@ -8,7 +8,9 @@ export type Project = {
   year: string;
   status: "Live" | "In launch" | "Archived";
   links: { label: string; href: string }[];
-  accent: string; // tailwind gradient classes for the card halo
+  accent: string;
+  image: string | null;
+  imageAccent: string;
 };
 
 export const projects: Project[] = [
@@ -18,7 +20,7 @@ export const projects: Project[] = [
     title: "TopStocx",
     subtitle: "Algorithmic trading platform",
     description:
-      "Solo-built multi-asset trading platform. TradingView Advanced Charts wired to the Leverate broker API for live market data, /chart Supercharts page with per-user state in Supabase, Three.js particle hero, and an AI trading assistant on Claude API.",
+      "Solo-built multi-asset trading platform. TradingView Advanced Charts wired to the Leverate broker API, /chart Supercharts page with per-user state in Supabase, Three.js particle hero, and an AI assistant on Claude API.",
     stack: ["Next.js", "Vite", "Supabase", "TradingView", "Three.js", "Claude API"],
     year: "2026",
     status: "Live",
@@ -27,6 +29,8 @@ export const projects: Project[] = [
       { label: "Case study", href: "https://github.com/shinas123/topstocx-trading-platform" },
     ],
     accent: "from-blue-500/30 via-cyan-500/10 to-transparent",
+    image: "/projects/topstocx.png",
+    imageAccent: "from-blue-500 to-cyan-400",
   },
   {
     id: "wsjr-school",
@@ -43,6 +47,8 @@ export const projects: Project[] = [
       { label: "Case study", href: "https://github.com/shinas123/wsjr-school" },
     ],
     accent: "from-amber-500/30 via-rose-500/10 to-transparent",
+    image: "/projects/wsjr-school.png",
+    imageAccent: "from-amber-500 to-rose-400",
   },
   {
     id: "mcp",
@@ -54,10 +60,10 @@ export const projects: Project[] = [
     stack: ["Python", "FastMCP", "Meta Marketing API", "GA4 Data API", "ReportLab"],
     year: "2026",
     status: "Live",
-    links: [
-      { label: "GitHub", href: "https://github.com/shinas123/Marketing-analytics-mcp" },
-    ],
+    links: [{ label: "GitHub", href: "https://github.com/shinas123/Marketing-analytics-mcp" }],
     accent: "from-violet-500/30 via-fuchsia-500/10 to-transparent",
+    image: null,
+    imageAccent: "from-violet-500 to-fuchsia-400",
   },
   {
     id: "ig-dm",
@@ -69,10 +75,10 @@ export const projects: Project[] = [
     stack: ["n8n", "Meta Graph API", "Google Sheets", "Slack", "JavaScript"],
     year: "2026",
     status: "Live",
-    links: [
-      { label: "GitHub", href: "https://github.com/shinas123/Instagram-DM-automation" },
-    ],
+    links: [{ label: "GitHub", href: "https://github.com/shinas123/Instagram-DM-automation" }],
     accent: "from-pink-500/30 via-orange-500/10 to-transparent",
+    image: "/projects/ig-dm.png",
+    imageAccent: "from-pink-500 to-orange-400",
   },
   {
     id: "petloom",
@@ -86,6 +92,8 @@ export const projects: Project[] = [
     status: "Archived",
     links: [],
     accent: "from-emerald-500/25 via-teal-500/10 to-transparent",
+    image: null,
+    imageAccent: "from-emerald-500 to-teal-400",
   },
   {
     id: "lakshmi",
@@ -99,5 +107,7 @@ export const projects: Project[] = [
     status: "Archived",
     links: [],
     accent: "from-yellow-500/25 via-amber-500/10 to-transparent",
+    image: null,
+    imageAccent: "from-yellow-500 to-amber-400",
   },
 ];

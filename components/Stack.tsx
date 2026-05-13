@@ -1,9 +1,9 @@
 "use client";
 import { motion } from "motion/react";
 
-const TOOLS = [
+const ROW_1 = [
   "Claude Code",
-  "Google Antigravity",
+  "Antigravity",
   "Claude API",
   "Model Context Protocol",
   "Next.js",
@@ -14,70 +14,108 @@ const TOOLS = [
   "n8n",
   "Three.js",
   "TradingView",
+];
+
+const ROW_2 = [
   "Stripe",
   "Mux",
   "Meta Marketing API",
   "Google Analytics 4",
   "HubSpot",
   "Tailwind CSS",
-  "Framer Motion",
+  "Motion",
   "Shopify",
   "Razorpay",
   "WhatsApp Business API",
+  "Webhooks",
+  "Postgres",
 ];
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Stack() {
-  // Duplicate to make the marquee loop seamless
-  const row = [...TOOLS, ...TOOLS];
-
   return (
-    <section id="stack" className="relative py-32 md:py-44 border-y border-white/10">
+    <section id="stack" className="relative py-28 md:py-40 border-y border-white/10 overflow-hidden">
       <motion.div
         initial={{ opacity: 0, y: 12 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-20%" }}
         transition={{ duration: 0.7, ease }}
-        className="text-center mb-12"
+        className="text-center mb-14 md:mb-20 px-6"
       >
         <p className="text-xs tracking-[0.3em] uppercase text-white/40">◇ Stack</p>
-        <h2 className="mt-4 font-serif text-3xl md:text-5xl tracking-tight">
+        <h2
+          className="mt-4 font-serif tracking-tight"
+          style={{ fontSize: "clamp(2rem, 6vw, 6rem)" }}
+        >
           Tools I <em className="italic accent-grad">reach for.</em>
         </h2>
       </motion.div>
 
-      <div className="relative overflow-hidden mask-fade">
-        <div className="flex w-max gap-8 animate-marquee">
-          {row.map((t, i) => (
-            <span
-              key={`${t}-${i}`}
-              className="text-2xl md:text-4xl font-serif italic text-white/60 hover:text-white transition-colors whitespace-nowrap"
-            >
-              {t} <span className="text-white/20 mx-2">·</span>
-            </span>
-          ))}
-        </div>
+      <div className="space-y-8 md:space-y-12">
+        <Row items={ROW_1} direction="left" speed="38s" />
+        <Row items={ROW_2} direction="right" speed="46s" italic />
       </div>
+    </section>
+  );
+}
 
+function Row({
+  items,
+  direction,
+  speed,
+  italic,
+}: {
+  items: string[];
+  direction: "left" | "right";
+  speed: string;
+  italic?: boolean;
+}) {
+  const row = [...items, ...items];
+  const animClass = direction === "left" ? "animate-[marquee_var(--d)_linear_infinite]" : "animate-[marquee-rev_var(--d)_linear_infinite]";
+  return (
+    <div className="relative overflow-hidden mask-fade">
+      <div
+        className={`flex w-max gap-10 md:gap-14 ${animClass}`}
+        style={{ ["--d" as never]: speed }}
+      >
+        {row.map((t, i) => (
+          <span
+            key={`${t}-${i}`}
+            className={`font-serif ${italic ? "italic" : ""} text-white/70 whitespace-nowrap`}
+            style={{ fontSize: "clamp(1.75rem, 5vw, 5rem)" }}
+          >
+            {t}
+            <span className="text-white/15 mx-4 md:mx-6">◇</span>
+          </span>
+        ))}
+      </div>
       <style jsx>{`
         .mask-fade {
           -webkit-mask-image: linear-gradient(
             90deg,
             transparent 0,
-            #000 12%,
-            #000 88%,
+            #000 10%,
+            #000 90%,
             transparent 100%
           );
           mask-image: linear-gradient(
             90deg,
             transparent 0,
-            #000 12%,
-            #000 88%,
+            #000 10%,
+            #000 90%,
             transparent 100%
           );
         }
+        @keyframes marquee-rev {
+          0% {
+            transform: translateX(-50%);
+          }
+          100% {
+            transform: translateX(0);
+          }
+        }
       `}</style>
-    </section>
+    </div>
   );
 }
