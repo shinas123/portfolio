@@ -181,8 +181,8 @@ export const projects: Project[] = [
     title: "Instagram DM Automation",
     subtitle: "Stateful conversational lead capture",
     description:
-      "n8n workflow that turns an Instagram account into an always-on lead funnel. Meta Graph API webhook ingests four event types into a multi-turn DM conversation (name → phone → email → thank you), then ships qualified leads to Sheets + Slack.",
-    stack: ["n8n", "Meta Graph API", "Google Sheets", "Slack", "JavaScript"],
+      "n8n workflow that turns an Instagram account into an always-on lead funnel. Meta Graph API webhook (with GET-challenge verification) ingests four event types into a multi-turn DM conversation — name → phone → email → thank-you — then writes the qualified lead straight into Google Sheets.",
+    stack: ["n8n", "Meta Graph API", "Instagram Messaging", "Google Sheets", "JavaScript"],
     year: "2026",
     era: "current",
     status: "Live",
@@ -196,7 +196,7 @@ export const projects: Project[] = [
       problem:
         "The CEO's personal-brand Instagram was generating qualified inbound — DMs, ad-form leads, comment intent — but the team was missing replies for hours during the day and entirely overnight. By the time someone got to a hot lead, the visitor had already moved on. Conversion was leaking.",
       solution:
-        "Built an n8n workflow on a Meta Graph API webhook that ingests four event types (new follower, DM, post comment, Meta Ad lead) and routes each into a stateful multi-turn conversation. Per-user state (waiting_name → waiting_phone → waiting_email → complete) lives in n8n's static data, keyed by Instagram sender ID. Each stage validates input (phone regex, email regex) before advancing. On complete, the qualified lead lands in Google Sheets and Slack pings the sales team.",
+        "Built an n8n workflow on a Meta Graph API webhook with two paths: a GET handler that returns Meta's challenge token to complete subscription verification, and a POST handler that ingests four event types (DM, new follower, post comment, Meta Ad lead) and routes each into a stateful multi-turn conversation. Per-user state (waiting_name → waiting_phone → waiting_email → complete) lives in n8n's static data, keyed by Instagram sender ID. Each stage validates input (phone regex, email regex) before advancing. On `complete`, the qualified lead is appended to Google Sheets with name, phone, email, IG ID, source, and timestamp — ready for the sales team to action.",
       decisions: [
         {
           label: "Stateful per-user conversation, not one-shot",
@@ -207,6 +207,11 @@ export const projects: Project[] = [
           label: "n8n static data over external DB for state",
           detail:
             "For medium volume, `$getWorkflowStaticData('global')` is dramatically simpler than wiring Supabase or Redis. Trade-off documented in the README: doesn't survive workflow restructure, so production at scale would externalise to Postgres. Right call for v1.",
+        },
+        {
+          label: "Two webhook paths in one workflow",
+          detail:
+            "Meta's webhook subscription requires a GET endpoint that returns `hub.challenge` before any events are sent. Most tutorials wire that into a separate workflow; I kept verification + event handling in the same n8n flow with two webhook nodes on the same path. Means one URL to register, one place to debug.",
         },
         {
           label: "Same pattern reused inside WSJR Academy's ATLAS",
