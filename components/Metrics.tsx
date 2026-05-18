@@ -2,6 +2,7 @@
 import { motion } from "motion/react";
 import { headlineMetrics } from "@/data/projects";
 import { ClipReveal } from "@/components/ScrollReveal";
+import AnimatedNumber from "@/components/AnimatedNumber";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -28,10 +29,10 @@ export default function Metrics() {
             className="flex flex-col"
           >
             <span
-              className="font-serif leading-[0.95] tracking-tight accent-grad"
+              className="font-serif leading-[0.95] tracking-tight accent-grad block"
               style={{ fontSize: "clamp(2.5rem, 5.5vw, 5rem)" }}
             >
-              {m.value}
+              <AnimatedNumber value={m.value} />
             </span>
             <span className="mt-3 text-xs md:text-sm text-white/55 leading-snug max-w-[18ch]">
               {m.label}

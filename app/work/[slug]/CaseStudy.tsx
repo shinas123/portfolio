@@ -1,8 +1,11 @@
 "use client";
+import { useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "motion/react";
 import { ClipReveal } from "@/components/ScrollReveal";
+import ArticleProgress from "@/components/ArticleProgress";
+import AnimatedNumber from "@/components/AnimatedNumber";
 import { projects, type Project } from "@/data/projects";
 
 const ease = [0.22, 1, 0.36, 1] as const;
@@ -11,9 +14,11 @@ export default function CaseStudy({ project }: { project: Project }) {
   const otherProjects = projects
     .filter((p) => p.slug !== project.slug && p.era === "current")
     .slice(0, 3);
+  const articleRef = useRef<HTMLElement>(null);
 
   return (
-    <main className="relative min-h-screen">
+    <main ref={articleRef} className="relative min-h-screen">
+      <ArticleProgress target={articleRef} />
       {/* Tiny top nav — back link */}
       <div className="fixed top-0 inset-x-0 z-40 px-5 md:px-10 lg:px-14 py-5 flex items-center justify-between mix-blend-difference">
         <Link
@@ -113,13 +118,13 @@ export default function CaseStudy({ project }: { project: Project }) {
         )}
       </section>
 
-      {/* Hero image */}
+      {/* Hero image — clip-path wipe-on from center for premium reveal */}
       {project.image && (
         <motion.section
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ clipPath: "inset(0% 50% 0% 50%)" }}
+          whileInView={{ clipPath: "inset(0% 0% 0% 0%)" }}
           viewport={{ once: true, margin: "-10%" }}
-          transition={{ duration: 1, ease }}
+          transition={{ duration: 1.2, ease }}
           className="relative px-5 md:px-10 lg:px-14 mb-16 md:mb-24 max-w-screen-2xl mx-auto"
         >
           <div className="relative aspect-[16/9] rounded-xl overflow-hidden glow-border">
@@ -196,10 +201,10 @@ export default function CaseStudy({ project }: { project: Project }) {
               className="border-t border-white/10 pt-5"
             >
               <div
-                className="font-serif leading-[0.95] tracking-tight accent-grad"
+                className="font-serif leading-[0.95] tracking-tight accent-grad block"
                 style={{ fontSize: "clamp(2rem, 4.5vw, 4rem)" }}
               >
-                {r.value}
+                <AnimatedNumber value={r.value} />
               </div>
               <div className="mt-3 text-sm text-white/70">{r.label}</div>
               {r.sub && (

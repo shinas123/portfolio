@@ -1,5 +1,7 @@
 "use client";
-import { motion } from "motion/react";
+import { motion, useScroll, useMotionValueEvent } from "motion/react";
+import { useState } from "react";
+import { ease } from "@/lib/motion";
 
 const links = [
   { href: "#work", label: "Work" },
@@ -9,11 +11,20 @@ const links = [
 ];
 
 export default function Navbar() {
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    if (latest > previous && latest > 140) setHidden(true);
+    else setHidden(false);
+  });
+
   return (
     <motion.header
       initial={{ y: -24, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 2.6 }}
+      animate={{ y: hidden ? -100 : 0, opacity: 1 }}
+      transition={{ duration: 0.45, ease }}
       className="fixed top-0 inset-x-0 z-50 px-5 md:px-10 lg:px-14 py-5 flex items-center justify-between mix-blend-difference"
     >
       <a href="#top" className="font-serif text-xl md:text-2xl tracking-tight text-white flex items-center gap-1.5">

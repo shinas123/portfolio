@@ -6,6 +6,7 @@ import Cursor from "@/components/Cursor";
 import LoadingScreen from "@/components/LoadingScreen";
 import ScrollProgress from "@/components/ScrollProgress";
 import SectionIndicator from "@/components/SectionIndicator";
+import MotionRoot from "@/components/MotionRoot";
 
 const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap" });
 const display = Instrument_Serif({
@@ -33,11 +34,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" className={`${sans.variable} ${display.variable}`}>
       <body className="bg-ink text-chrome antialiased">
-        <LoadingScreen />
-        <Cursor />
-        <ScrollProgress />
-        <SectionIndicator />
-        <SmoothScroll>{children}</SmoothScroll>
+        <MotionRoot>
+          <LoadingScreen />
+          <Cursor />
+          <ScrollProgress />
+          <SectionIndicator />
+          <SmoothScroll>{children}</SmoothScroll>
+        </MotionRoot>
       </body>
     </html>
   );

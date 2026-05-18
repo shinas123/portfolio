@@ -1,6 +1,13 @@
 "use client";
 import { useRef } from "react";
-import { motion, useMotionValue, useMotionTemplate, useSpring } from "motion/react";
+import {
+  motion,
+  useMotionValue,
+  useMotionTemplate,
+  useSpring,
+  useScroll,
+  useTransform,
+} from "motion/react";
 import Magnetic from "@/components/Magnetic";
 import Starfield from "@/components/Starfield";
 
@@ -9,6 +16,19 @@ const ease = [0.22, 1, 0.36, 1] as const;
 
 export default function Hero() {
   const sectionRef = useRef<HTMLElement>(null);
+
+  // Scroll-linked exit: as the hero leaves the viewport, scale/blur/fade.
+  // Starts at the top of the hero, completes by the time you've scrolled
+  // one viewport height.
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end start"],
+  });
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.7, 1], [1, 1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.92]);
+  const heroBlurValue = useTransform(scrollYProgress, [0, 1], [0, 8]);
+  const heroFilter = useMotionTemplate`blur(${heroBlurValue}px)`;
+  const heroY = useTransform(scrollYProgress, [0, 1], ["0%", "-12%"]);
 
   // Spotlight: raw pixel position of mouse inside the hero
   const spotX = useMotionValue(-500);
@@ -48,8 +68,18 @@ export default function Hero() {
       id="top"
       onMouseMove={onMove}
       onMouseLeave={onLeave}
-      className="relative min-h-[100svh] flex flex-col justify-center px-5 md:px-10 lg:px-14 overflow-hidden grid-bg noise"
+      className="relative min-h-[100svh] px-5 md:px-10 lg:px-14 overflow-hidden grid-bg noise"
     >
+      {/* Scroll-linked exit wrapper — everything inside fades/blurs/scales as we leave the hero */}
+      <motion.div
+        style={{
+          opacity: heroOpacity,
+          scale: heroScale,
+          filter: heroFilter,
+          y: heroY,
+        }}
+        className="absolute inset-0 flex flex-col justify-center px-5 md:px-10 lg:px-14 will-change-transform"
+      >
       {/* Cursor-tracked spotlight */}
       <motion.div
         aria-hidden
@@ -200,6 +230,7 @@ export default function Hero() {
         className="absolute bottom-8 left-5 md:left-10 lg:left-14 z-10 text-[10px] tracking-[0.35em] uppercase text-white/40 flex items-center gap-3"
       >
         <span className="w-10 h-px bg-white/30" /> Scroll
+      </motion.div>
       </motion.div>
     </section>
   );
