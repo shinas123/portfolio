@@ -1,99 +1,159 @@
 "use client";
+import { useEffect } from "react";
 import Image from "next/image";
-import { motion, useScroll, useSpring, useTransform } from "motion/react";
+import { motion, useSpring, useTransform, useMotionValue } from "motion/react";
 
-// 8 sections: Hero, About, Metrics, Projects, Services, Stack, Certifications, Contact
-const STOPS = [0, 0.14, 0.28, 0.42, 0.56, 0.7, 0.84, 1] as const;
-
+/**
+ * Chrome blob, rendered as a child of the Hero section's DOM.
+ * Uses `absolute inset-0` so it lives inside Hero's bounding box and
+ * scrolls away naturally with it — no fixed positioning, no scroll-driven
+ * opacity tricks.
+ *
+ * Only motion is non-scroll:
+ *   - idle liquid float (continuous bob/breathe/drift)
+ *   - cursor-tracking 3D tilt
+ *   - SVG displacement filter for morphing liquid edge
+ *   - ambient lavender→blue halo pulse
+ */
 export default function HeroObject() {
-  const { scrollYProgress } = useScroll();
-
-  // Spring-smoothed progress so transforms feel buttery, not 1:1 with scroll
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 80,
-    damping: 30,
-    mass: 0.5,
+  // Cursor-tracking 3D tilt
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const tiltY = useSpring(useTransform(mouseX, [-1, 1], [-18, 18]), {
+    stiffness: 60, damping: 18, mass: 0.6,
+  });
+  const tiltX = useSpring(useTransform(mouseY, [-1, 1], [12, -12]), {
+    stiffness: 60, damping: 18, mass: 0.6,
   });
 
-  // Position / scale / rotation per section
-  const x = useTransform(smooth, [...STOPS], [
-    "18vw",   // Hero — right side, dominant
-    "24vw",   // About — drifts further right
-    "-6vw",   // Metrics — pulls toward center-left
-    "32vw",   // Projects — pushed mostly off-screen right, behind
-    "-18vw",  // Services — swings to left of center
-    "6vw",    // Stack — center-right
-    "-22vw",  // Certifications — left side
-    "0vw",    // Contact — dead center
-  ]);
-
-  const y = useTransform(smooth, [...STOPS], [
-    "0vh", "12vh", "30vh", "5vh", "22vh", "40vh", "10vh", "15vh",
-  ]);
-
-  const scale = useTransform(smooth, [...STOPS], [
-    1.1, 0.9, 1.0, 0.5, 1.15, 0.8, 0.7, 1.35,
-  ]);
-
-  const rotate = useTransform(smooth, [...STOPS], [
-    -8, 12, 45, -25, 90, 180, 220, 350,
-  ]);
-
-  // Crossfade between the three blob assets
-  // Blob 1: full through Hero+About, fades during Metrics
-  const opacity1 = useTransform(smooth, [0, 0.22, 0.34], [0.85, 0.85, 0]);
-  // Blob 2: fades in through Metrics, dominant through Projects+Services, out during Stack
-  const opacity2 = useTransform(smooth, [0.22, 0.34, 0.6, 0.72], [0, 0.85, 0.85, 0]);
-  // Blob 3: fades in during Stack, dominant through Certs+Contact
-  const opacity3 = useTransform(smooth, [0.6, 0.72, 1], [0, 0.85, 0.85]);
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      mouseX.set((e.clientX / window.innerWidth) * 2 - 1);
+      mouseY.set((e.clientY / window.innerHeight) * 2 - 1);
+    };
+    window.addEventListener("mousemove", handler, { passive: true });
+    return () => window.removeEventListener("mousemove", handler);
+  }, [mouseX, mouseY]);
 
   return (
-    <div
-      className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
-      aria-hidden
-    >
-      <motion.div
-        style={{ x, y, scale, rotate }}
-        className="absolute top-[8vh] left-1/2 -translate-x-1/2 w-[min(75vw,720px)] aspect-[2/3] will-change-transform"
+    <>
+      {/* SVG filter: black→transparent + continuous liquid-edge displacement */}
+      <svg
+        aria-hidden
+        width="0"
+        height="0"
+        style={{ position: "absolute", width: 0, height: 0 }}
       >
-        <motion.div
-          style={{ opacity: opacity1 }}
-          className="absolute inset-0 mix-blend-lighten"
-        >
-          <Image
-            src="/hero-object-1.png"
-            alt=""
-            fill
-            priority
-            sizes="(max-width: 768px) 75vw, 720px"
-            className="object-contain"
-          />
-        </motion.div>
-        <motion.div
-          style={{ opacity: opacity2 }}
-          className="absolute inset-0 mix-blend-lighten"
-        >
-          <Image
-            src="/hero-object-2.png"
-            alt=""
-            fill
-            sizes="(max-width: 768px) 75vw, 720px"
-            className="object-contain"
-          />
-        </motion.div>
-        <motion.div
-          style={{ opacity: opacity3 }}
-          className="absolute inset-0 mix-blend-lighten"
-        >
-          <Image
-            src="/hero-object-3.png"
-            alt=""
-            fill
-            sizes="(max-width: 768px) 75vw, 720px"
-            className="object-contain"
-          />
-        </motion.div>
-      </motion.div>
-    </div>
+        <defs>
+          <filter
+            id="liquidMorph"
+            x="-25%"
+            y="-25%"
+            width="150%"
+            height="150%"
+            colorInterpolationFilters="sRGB"
+          >
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.008 0.012"
+              numOctaves="2"
+              seed="3"
+              result="noise"
+            >
+              <animate
+                attributeName="baseFrequency"
+                values="0.008 0.012; 0.014 0.018; 0.010 0.014; 0.008 0.012"
+                dur="16s"
+                repeatCount="indefinite"
+              />
+            </feTurbulence>
+            <feColorMatrix
+              in="SourceGraphic"
+              type="matrix"
+              values="1 0 0 0 0
+                      0 1 0 0 0
+                      0 0 1 0 0
+                      1 1 1 0 0"
+              result="keyed"
+            />
+            <feComponentTransfer in="keyed" result="cleaned">
+              <feFuncA type="linear" slope="1.4" intercept="-0.1" />
+            </feComponentTransfer>
+            <feDisplacementMap
+              in="cleaned"
+              in2="noise"
+              scale="18"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Absolute inside Hero — scrolls with Hero, vanishes when Hero leaves */}
+      <div
+        className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
+        style={{ perspective: 1400 }}
+        aria-hidden
+      >
+        <div className="absolute top-[10vh] right-[2vw] md:right-[4vw] w-[min(70vw,620px)] aspect-[2/3]">
+          <motion.div
+            style={{
+              rotateX: tiltX,
+              rotateY: tiltY,
+              transformStyle: "preserve-3d",
+            }}
+            className="w-full h-full"
+          >
+            <motion.div
+              aria-hidden
+              animate={{
+                opacity: [0.55, 0.85, 0.55],
+                scale: [0.9, 1.05, 0.9],
+              }}
+              transition={{
+                duration: 9,
+                ease: "easeInOut",
+                repeat: Infinity,
+              }}
+              className="absolute inset-[10%] rounded-full blur-3xl"
+              style={{
+                background:
+                  "radial-gradient(closest-side, rgba(155,135,245,0.30), rgba(59,130,246,0.10) 55%, transparent 75%)",
+              }}
+            />
+
+            <motion.div
+              animate={{
+                y: [0, -28, 4, -14, 0],
+                x: [0, 10, -8, 6, 0],
+                rotate: [0, 2.5, -2, 1.5, 0],
+                scale: [1, 1.04, 0.98, 1.02, 1],
+              }}
+              transition={{
+                duration: 14,
+                ease: "easeInOut",
+                repeat: Infinity,
+              }}
+              className="relative w-full h-full"
+            >
+              <div
+                className="absolute inset-0"
+                style={{ filter: "url(#liquidMorph)", opacity: 0.9 }}
+              >
+                <Image
+                  src="/hero-object-1.png"
+                  alt=""
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 70vw, 620px"
+                  className="object-contain"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </div>
+    </>
   );
 }
