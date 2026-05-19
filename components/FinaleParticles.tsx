@@ -68,22 +68,21 @@ function Particles({ progress, particleCount: PARTICLE_COUNT }: ParticlesProps) 
       seaBase[i * 3 + 1] = -1.2;
       seaBase[i * 3 + 2] = (row / (cols - 1) - 0.5) * 8;
 
-      // Gradient palette: blue → purple → white (no rose-gold)
-      // Smoothly interpolate so the cloud reads as a true gradient.
+      // Gradient palette: deep blue → light blue → white
       const t = Math.random();
       let cr: number, cg: number, cb: number;
       if (t < 0.5) {
-        // Blue → purple
+        // Deep blue (#2174F5) → light sky blue (#96C8FF)
         const k = t * 2;
-        cr = 0.23 + (0.61 - 0.23) * k;
-        cg = 0.51 + (0.53 - 0.51) * k;
-        cb = 0.96;
-      } else {
-        // Purple → white
-        const k = (t - 0.5) * 2;
-        cr = 0.61 + (1.0 - 0.61) * k;
-        cg = 0.53 + (1.0 - 0.53) * k;
+        cr = 0.13 + (0.59 - 0.13) * k;
+        cg = 0.45 + (0.78 - 0.45) * k;
         cb = 0.96 + (1.0 - 0.96) * k;
+      } else {
+        // Light sky blue → white
+        const k = (t - 0.5) * 2;
+        cr = 0.59 + (1.0 - 0.59) * k;
+        cg = 0.78 + (1.0 - 0.78) * k;
+        cb = 1.0;
       }
       colors[i * 3] = cr;
       colors[i * 3 + 1] = cg;
@@ -178,11 +177,11 @@ function Particles({ progress, particleCount: PARTICLE_COUNT }: ParticlesProps) 
         <bufferAttribute attach="attributes-color" args={[colors, 3]} />
       </bufferGeometry>
       <pointsMaterial
-        size={0.028}
+        size={0.04}
         sizeAttenuation
         vertexColors
         transparent
-        opacity={0.7}
+        opacity={0.65}
         depthWrite={false}
         blending={THREE.AdditiveBlending}
       />
