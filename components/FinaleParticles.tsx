@@ -1,16 +1,27 @@
 "use client";
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { type MotionValue, useMotionValueEvent } from "motion/react";
 
-const PARTICLE_COUNT = 2500;
+// Mobile gets ~half the particles + lower DPR to keep frame rate up
+const MOBILE_PARTICLE_COUNT = 1200;
+const DESKTOP_PARTICLE_COUNT = 2500;
+const MOBILE_BREAKPOINT = 768;
+
+function getInitialParticleCount() {
+  if (typeof window === "undefined") return DESKTOP_PARTICLE_COUNT;
+  return window.innerWidth < MOBILE_BREAKPOINT
+    ? MOBILE_PARTICLE_COUNT
+    : DESKTOP_PARTICLE_COUNT;
+}
 
 type ParticlesProps = {
   progress: MotionValue<number>;
+  particleCount: number;
 };
 
-function Particles({ progress }: ParticlesProps) {
+function Particles({ progress, particleCount: PARTICLE_COUNT }: ParticlesProps) {
   const pointsRef = useRef<THREE.Points>(null);
   const { viewport } = useThree();
   const progressRef = useRef(0);
@@ -80,14 +91,14 @@ function Particles({ progress }: ParticlesProps) {
     }
 
     return { splash, globe, waveBase, seaBase, colors };
-  }, [viewport.width, viewport.height]);
+  }, [viewport.width, viewport.height, PARTICLE_COUNT]);
 
   // Initial live positions = splash
   const positions = useMemo(() => {
     const arr = new Float32Array(PARTICLE_COUNT * 3);
     arr.set(splash);
     return arr;
-  }, [splash]);
+  }, [splash, PARTICLE_COUNT]);
 
   useFrame((state) => {
     if (!pointsRef.current) return;
@@ -179,15 +190,30 @@ function Particles({ progress }: ParticlesProps) {
   );
 }
 
-export default function FinaleParticles({ progress }: ParticlesProps) {
+type FinaleProps = {
+  progress: MotionValue<number>;
+};
+
+export default function FinaleParticles({ progress }: FinaleProps) {
+  // Settle particle count + DPR once, on mount, based on viewport
+  const [particleCount, setParticleCount] = useState(getInitialParticleCount);
+  const [maxDpr, setMaxDpr] = useState<number>(2);
+
+  useEffect(() => {
+    const isMobile = window.innerWidth < MOBILE_BREAKPOINT;
+    setParticleCount(isMobile ? MOBILE_PARTICLE_COUNT : DESKTOP_PARTICLE_COUNT);
+    // Mobile retina screens hit perf hard at dpr=2; cap at 1.25
+    setMaxDpr(isMobile ? 1.25 : 2);
+  }, []);
+
   return (
     <Canvas
       camera={{ position: [0, 0, 7], fov: 50 }}
-      dpr={[1, 2]}
+      dpr={[1, maxDpr]}
       gl={{ antialias: true, alpha: true, powerPreference: "high-performance" }}
       style={{ background: "transparent" }}
     >
-      <Particles progress={progress} />
+      <Particles progress={progress} particleCount={particleCount} />
     </Canvas>
   );
 }

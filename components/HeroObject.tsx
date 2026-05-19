@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useSpring, useTransform, useMotionValue } from "motion/react";
 
@@ -26,7 +26,14 @@ export default function HeroObject() {
     stiffness: 60, damping: 18, mass: 0.6,
   });
 
+  // Skip the mousemove listener entirely on touch-only devices —
+  // it does nothing and just wastes battery on mobile.
   useEffect(() => {
+    const isTouchOnly =
+      typeof window !== "undefined" &&
+      window.matchMedia("(hover: none) and (pointer: coarse)").matches;
+    if (isTouchOnly) return;
+
     const handler = (e: MouseEvent) => {
       mouseX.set((e.clientX / window.innerWidth) * 2 - 1);
       mouseY.set((e.clientY / window.innerHeight) * 2 - 1);
@@ -96,7 +103,9 @@ export default function HeroObject() {
         style={{ perspective: 1400 }}
         aria-hidden
       >
-        <div className="absolute top-[10vh] right-[2vw] md:right-[4vw] w-[min(70vw,620px)] aspect-[2/3]">
+        {/* Mobile: 60vw wide, positioned upper-right (sits behind hero text).
+            Desktop: up to 620px wide on the right side. */}
+        <div className="absolute top-[8vh] md:top-[10vh] right-[-8vw] md:right-[2vw] lg:right-[4vw] w-[80vw] md:w-[min(70vw,620px)] aspect-[2/3]">
           <motion.div
             style={{
               rotateX: tiltX,
